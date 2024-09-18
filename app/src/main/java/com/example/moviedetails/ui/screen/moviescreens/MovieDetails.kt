@@ -24,10 +24,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moviedetails.viewmodel.UpcomingViewModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Card
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.example.moviedetails.data.model.upcoming.ResultUpcomingModel
+import com.example.moviedetails.ui.screen.loginpages.logout
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SuspiciousIndentation")
 @Composable
@@ -37,12 +44,21 @@ fun MovieDetails(
     navController: NavHostController
 ) {
     val upcomingData by viewModel.upcomingData
+    val context = LocalContext.current
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = { Text("Welcome to the Movies,, $name") },
                     backgroundColor = Color.Cyan,
                     contentColor = Color.White,
+                    actions = {
+                        // Add a Logout button
+                        IconButton(onClick = {
+                            logout(navController = navController, context)  // Call the logout function on click
+                        }) {
+                            Icon(imageVector = Icons.Default.ExitToApp, contentDescription = "Logout", tint = Color.Black)
+                        }
+                    }
 //                    modifier = Modifier.(10.dp)
 
                 )

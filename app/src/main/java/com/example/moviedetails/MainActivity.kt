@@ -1,5 +1,6 @@
 package com.example.moviedetails
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -42,35 +44,51 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val isLoggedIn = getUserSession(this)
         setContent {
             MovieDetailsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
-                    MyApp(navController)
-
+                        MyApp(navController, isLoggedIn)
                 }
             }
         }
     }
 }
 
-@Composable
-fun MyApp(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "login") {
-        composable("login") { LoginPage(navController) }
-        composable("signup") {
+// Function to get the user session state
+fun getUserSession(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("is_logged_in", false)
+}
 
-            SignUpPage(navController) }
+@Composable
+fun MyApp(navController: NavHostController, isLoggedIn: Boolean) {
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") {
+          if (!isLoggedIn)   LoginPage(navController)
+          else   WelcomeScreen(name = "Welcome", navController = navController)
+        }
+        composable("signup") { SignUpPage(navController) }
         composable("welcome/{name}") { backStackEntry ->
-            val name = backStackEntry.arguments?.getString("name")
-            MovieDetails(name = name ?: "", navController = navController)
-            WelcomeWithBottomNav( name ?: "", navController)
+            val name = backStackEntry.arguments?.getString("name") ?: "Welcome"
+            WelcomeScreen(name, navController)
         }
         composable("movie_detail/{movieId}") { backStackEntry ->
             val movieId = backStackEntry.arguments?.getString("movieId")
             MovieDetailScreen(navController, movieId ?: "")
         }
     }
+}
+
+@Composable
+private fun WelcomeScreen(
+    name: String,
+    navController: NavHostController
+) {
+    MovieDetails(name = name ?: "", navController = navController)
+    WelcomeWithBottomNav(name ?: "", navController)
 }
 
 @Composable
@@ -87,8 +105,8 @@ fun WelcomeWithBottomNav( name: String, navController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("welcome_page") { MovieDetails(name, navController = navController) }
-            composable("show_page") { ShowDetails() }
-            composable("recommended_page") { RecommendedShowDetails() }
+            composable("show_page") { ShowDetails(navController = navController) }
+            composable("recommended_page") { RecommendedShowDetails(navController = navController) }
         }
     }
 }

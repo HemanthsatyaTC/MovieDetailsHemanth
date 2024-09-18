@@ -204,6 +204,7 @@ fun LoginUser(
                 val user = auth.currentUser
                 updateUI(user)
                 navController.navigate("welcome/ ${task.result.user?.email} ")
+                saveUserSession(context = context, isLoggedIn = true)
             } else {
                 // If sign in fails, display a message to the user.
                 Log.w(TAG, "signInWithEmail:failure", task.exception)
@@ -241,6 +242,7 @@ fun firebaseAuthWithGoogle(
                 val user = auth.currentUser
                 user?.let {
                     navController.navigate("welcome/${it.displayName ?: "User"}")
+                    saveUserSession(context = context, isLoggedIn = true)
                 }
             } else {
                 Toast.makeText(context, "Google Authentication Failed.", Toast.LENGTH_SHORT).show()
@@ -270,6 +272,7 @@ fun github(auth: FirebaseAuth, context: android.content.Context, navController: 
             .startActivityForSignInWithProvider(context as Activity, provider.build())
             .addOnSuccessListener {
                 navController.navigate("welcome/ ${it.user?.email} ")
+                saveUserSession(context = context, isLoggedIn = true)
             }
             .addOnFailureListener {
                 Toast.makeText(context,"Failed to github", Toast.LENGTH_SHORT).show()

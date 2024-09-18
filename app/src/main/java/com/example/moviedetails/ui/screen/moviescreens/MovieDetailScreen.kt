@@ -13,15 +13,28 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.example.moviedetails.viewmodel.UpcomingViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MovieDetailScreen(navController: NavHostController, movieId: String) {
+fun MovieDetailScreen(
+    navController: NavHostController,
+    movieId: String,
+    viewModel: UpcomingViewModel = hiltViewModel()
+    ) {
+    val upcomingData by viewModel.upcomingData
+
+    LaunchedEffect(Unit) {
+        viewModel.upcomingData
+    }
     Scaffold(
         topBar = {
             TopAppBar(

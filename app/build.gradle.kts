@@ -92,9 +92,11 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.0.0")
     //room dependencies
-    implementation ("androidx.room:room-runtime:2.4.3")
-    kapt ("androidx.room:room-compiler:2.4.3")
-    implementation ("androidx.room:room-ktx:2.4.3")
+    implementation ("androidx.room:room-runtime:2.6.1")
+    kapt ("androidx.room:room-compiler:2.6.1")
+    implementation ("androidx.room:room-ktx:2.6.1")
 
-    implementation ("com.google.accompanist:accompanist-swiperefresh:0.24.4-alpha")
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.24.5-alpha")
+
+
 }

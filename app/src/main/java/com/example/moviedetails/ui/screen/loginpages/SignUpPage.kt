@@ -1,6 +1,7 @@
 package com.example.moviedetails.ui.screen.loginpages
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -158,6 +159,7 @@ fun SignInUser(
                 val user = auth.currentUser
                 updateUI(user)
                 navController.navigate("welcome/$name")
+                saveUserSession(context = context, isLoggedIn = true)
 
             } else {
                 // If sign in fails, display a message to the user.
@@ -174,3 +176,26 @@ fun SignInUser(
 
 private fun updateUI(user: FirebaseUser?) {
 }
+
+fun logout(navController: NavHostController, context: Context) {
+    // Clear shared preferences (session data)
+    clearUserSession(context)
+
+    // Navigate to the login screen
+    navController.navigate("login") {
+        popUpTo(navController.graph.startDestinationId) {
+            inclusive = true  // Ensure the back stack is cleared
+        }
+    }
+}
+
+fun clearUserSession(context: Context) {
+    val sharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+    sharedPreferences.edit().clear().apply()
+}
+
+fun saveUserSession(context: Context, isLoggedIn: Boolean) {
+    val sharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+    sharedPreferences.edit().putBoolean("is_logged_in", isLoggedIn).apply()
+}
+
